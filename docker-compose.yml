@@ -18,9 +18,9 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
-      KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
     volumes:
-      - shop-kafka-data:/tmp/kraft-combined-logs
+      - shop-kafka-data:/var/lib/kafka/data
     networks:
       - shop-network
 
@@ -57,10 +57,7 @@ services:
 
 volumes:
   shop-mongodb-data:
-    external: true
   shop-kafka-data:
-    external: true
 
 networks:
   shop-network:
-    external: true
