@@ -1,0 +1,66 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    volumes:
+      - shop-mongodb-data:/data/db
+    networks:
+      - shop-network
+
+  kafka:
+    image: apache/kafka:4.4.0
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
+    volumes:
+      - shop-kafka-data:/tmp/kraft-combined-logs
+    networks:
+      - shop-network
+
+  api-server:
+    image: yams-api-server
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - shop-network
+
+  client-server:
+    image: yams-client-server
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      API_SERVER_URL: http://api-server:5000
+    depends_on:
+      - kafka
+      - api-server
+    networks:
+      - shop-network
+
+  frontend:
+    image: yams-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - client-server
+    networks:
+      - shop-network
+
+volumes:
+  shop-mongodb-data:
+    external: true
+  shop-kafka-data:
+    external: true
+
+networks:
+  shop-network:
+    external: true

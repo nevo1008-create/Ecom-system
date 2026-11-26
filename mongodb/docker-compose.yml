@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:8.0
+    ports:
+      - "127.0.0.1:27018:27017"
+    volumes:
+      - shop-mongodb-data:/data/db
+    networks:
+      - shop-network
+
+volumes:
+  shop-mongodb-data:
+    external: true
+
+networks:
+  shop-network:
+    external: true

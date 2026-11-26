@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#062f38">
+  <meta name="description" content="YAM'S SHELLS — curious treasures collected by the tide.">
+  <title>YAM'S SHELLS</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="scripts/app.js" defer></script>
+</head>
+<body>
+  <header class="simple-header" id="top">
+    <h1>YAM'S SHELLS</h1>
+  </header>
+
+  <main>
+    <section class="shore-tools reveal" id="shore-tools" aria-label="Collector tools">
+      <div class="collector-field">
+        <label for="user-id">Who is collecting today?</label>
+        <div class="input-shell">
+          <span aria-hidden="true">@</span>
+          <input id="user-id" type="text" value="user-1" autocomplete="off" aria-describedby="collector-hint">
+        </div>
+        <small id="collector-hint">This name travels with every shell to your treasure log.</small>
+      </div>
+
+      <div class="tide-oracle">
+        <span class="oracle-icon" aria-hidden="true">◌</span>
+        <div>
+          <small>Feeling indecisive?</small>
+          <strong id="oracle-answer">Ask the tide for a sign.</strong>
+        </div>
+        <button id="tide-pick" type="button">Choose for me</button>
+      </div>
+
+      <div class="pearl-score" id="pearl-score" aria-live="polite">
+        <span class="score-pearl" aria-hidden="true"></span>
+        <div><strong id="pearl-count">0 / 10</strong><small>secret pearls found</small></div>
+      </div>
+    </section>
+
+    <section class="collection" id="collection">
+      <div class="collection-intro reveal">
+        <p class="section-kicker">THE SHORE IS OPEN</p>
+        <h2>Six treasures washed up<br><em>just for you.</em></h2>
+        <p>Tap a shell to hear its story, or send it straight to your bag. Look closely — ten tiny pearls are hiding around the shore.</p>
+      </div>
+
+      <div class="shell-grid" id="shell-grid" aria-label="Shell collection"></div>
+
+      <div class="pearl-hunt" aria-label="Hidden pearl hunt">
+        <button class="hidden-pearl pearl-one" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-two" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-three" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-four" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-five" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-six" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-seven" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-eight" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-nine" type="button" aria-label="A hidden pearl"></button>
+        <button class="hidden-pearl pearl-ten" type="button" aria-label="A hidden pearl"></button>
+      </div>
+    </section>
+
+    <section class="pearl-game" id="pearl-game">
+      <div class="game-copy reveal">
+        <p class="section-kicker">A TINY SHORE GAME</p>
+        <h2>Where is the pearl?</h2>
+        <p>Shuffle the three shells, follow the tide, and choose the one hiding a pearl.</p>
+        <button class="shuffle-button" id="shuffle-button" type="button">Shuffle the shells</button>
+        <p class="game-message" id="game-message" role="status" aria-live="polite">The pearl is waiting to hide.</p>
+      </div>
+
+      <div class="shell-game-board reveal" id="shell-game-board" aria-label="Find the hidden pearl game">
+        <button class="game-shell" type="button" data-game-slot="0" aria-label="Choose the first shell">
+          <img src="assets/shells/blush-conch.png" alt="">
+          <span class="game-pearl" aria-hidden="true"></span>
+          <small>Shell one</small>
+        </button>
+        <button class="game-shell" type="button" data-game-slot="1" aria-label="Choose the second shell">
+          <img src="assets/shells/seafoam-whisper.png" alt="">
+          <span class="game-pearl" aria-hidden="true"></span>
+          <small>Shell two</small>
+        </button>
+        <button class="game-shell" type="button" data-game-slot="2" aria-label="Choose the third shell">
+          <img src="assets/shells/moon-pearl.png" alt="">
+          <span class="game-pearl" aria-hidden="true"></span>
+          <small>Shell three</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="wave-game" id="wave-game">
+      <div class="wave-game-heading reveal">
+        <div>
+          <p class="section-kicker">THREE WAVES. QUICK HANDS.</p>
+          <h2>Catch them<br>before the tide.</h2>
+          <p>Three waves will wash across the beach. Grab as many shells as you can before the water reaches them.</p>
+        </div>
+
+        <div class="wave-game-controls">
+          <div class="wave-stat"><small>Wave</small><strong id="wave-number">0 / 3</strong></div>
+          <div class="wave-stat"><small>Caught</small><strong id="wave-score">0</strong></div>
+          <button id="start-wave-game" type="button">Start the game</button>
+        </div>
+      </div>
+
+      <div class="wave-arena reveal" id="wave-arena" aria-label="Catch shells before the waves game">
+        <div class="arena-sun" aria-hidden="true"></div>
+        <div class="arena-horizon" aria-hidden="true"></div>
+        <div class="wave-front" id="wave-front" aria-hidden="true"></div>
+        <div class="wave-result" id="wave-result" role="status" aria-live="polite">
+          <span>🐚</span>
+          <strong>Ready when you are.</strong>
+          <small>Press start for wave one.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="history" id="history">
+      <div class="history-heading reveal">
+        <div>
+          <p class="section-kicker">YOUR TREASURE LOG</p>
+          <h2>What the tide<br>brought home.</h2>
+        </div>
+        <button class="history-button" id="history-button" type="button">
+          <span>Fetch my purchases</span>
+          <i aria-hidden="true">↗</i>
+        </button>
+      </div>
+
+      <p class="history-status" id="history-status" role="status" aria-live="polite">Your log is sleeping until you ask for it.</p>
+      <div class="purchase-grid" id="purchases"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <span class="footer-shell" aria-hidden="true">◒</span>
+      <strong>YAM'S SHELLS</strong>
+      <p>A tiny corner of the internet where the currency is kisses.</p>
+    </div>
+    <a href="#top">Back to the top ↑</a>
+    <span>Made somewhere between the sand and the sea.</span>
+  </footer>
+
+  <button class="floating-bag" id="floating-bag" type="button" aria-label="Open shell bag">
+    <span class="bag-shell" aria-hidden="true">◒</span>
+    <span class="bag-copy"><small>Your shell bag</small><strong id="floating-total">0 kisses</strong></span>
+    <b id="floating-count">0</b>
+  </button>
+
+  <div class="drawer-scrim" id="drawer-scrim"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="cart-header">
+      <div>
+        <small>YOUR LITTLE HAUL</small>
+        <h2 id="cart-title">Shell bag <span id="cart-count">0</span></h2>
+      </div>
+      <button class="drawer-close" id="drawer-close" type="button" aria-label="Close shell bag">×</button>
+    </div>
+
+    <div class="cart-list" id="cart-list">
+      <div class="empty-cart">
+        <span aria-hidden="true">◌</span>
+        <strong>Only sea breeze in here.</strong>
+        <p>Pick a shell from the shore and it will appear in your bag.</p>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <p class="cart-message" id="message" role="status" aria-live="polite">The tide is calm.</p>
+      <div class="cart-total"><span>Total</span><strong id="cart-total">0 kisses</strong></div>
+      <div class="cart-actions">
+        <button id="clear-cart-button" type="button" disabled>Empty bag</button>
+        <button id="checkout-button" type="button" disabled>BUY EVERYTHING</button>
+      </div>
+    </div>
+  </aside>
+
+  <dialog class="shell-dialog" id="shell-dialog">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Close shell story">×</button>
+    <div class="dialog-image"><img id="dialog-image" src="" alt=""></div>
+    <div class="dialog-content">
+      <p class="section-kicker" id="dialog-number">TREASURE 01</p>
+      <h2 id="dialog-name"></h2>
+      <p id="dialog-story"></p>
+      <div class="dialog-details">
+        <span><small>Mood</small><strong id="dialog-mood"></strong></span>
+        <span><small>Price</small><strong id="dialog-price"></strong></span>
+      </div>
+      <button class="dialog-add" id="dialog-add" type="button">Add this treasure</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
