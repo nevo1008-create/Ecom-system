@@ -1,0 +1,36 @@
+#!/bin/bash
+set -euxo pipefail
+
+dnf install -y docker
+systemctl enable --now docker
+
+docker network create shop-network || true
+docker volume create yams-mongodb-data
+docker volume create yams-kafka-data
+
+docker run --detach \
+  --name mongodb \
+  --restart unless-stopped \
+  --network shop-network \
+  --publish 27017:27017 \
+  --volume yams-mongodb-data:/data/db \
+  mongo:8.0
+
+docker run --detach \
+  --name kafka \
+  --hostname kafka \
+  --restart unless-stopped \
+  --network shop-network \
+  --publish 9092:9092 \
+  --env KAFKA_NODE_ID=1 \
+  --env KAFKA_PROCESS_ROLES=broker,controller \
+  --env KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 \
+  --env KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${data_server_private_ip}:9092 \
+  --env KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT \
+  --env KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT \
+  --env KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+  --env KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093 \
+  --env KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+  --env KAFKA_LOG_DIRS=/var/lib/kafka/data \
+  --volume yams-kafka-data:/var/lib/kafka/data \
+  apache/kafka:4.4.0
