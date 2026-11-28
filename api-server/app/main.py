@@ -1,13 +1,14 @@
 import json
+import os
+import time
 from threading import Thread
 
 from flask import Flask, jsonify
-from kafka import KafkaConsumer
+from kafka.errors import KafkaError
 from pymongo import MongoClient
-from pymongo.errors import DuplicateKeyError
-import os
-import time
+from pymongo.errors import DuplicateKeyError, PyMongoError
 
+from kafka import KafkaConsumer
 
 app = Flask(__name__)
 
@@ -40,7 +41,7 @@ def connect_to_mongodb():
             print("Connected to MongoDB", flush=True)
             return purchases_collection
 
-        except Exception as error:
+        except PyMongoError as error:
             print(
                 f"MongoDB is not ready: {error}",
                 flush=True,
@@ -76,7 +77,7 @@ def consume_purchases():
 
                 consumer.commit()
 
-        except Exception as error:
+        except KafkaError as error:
             print(
                 f"Kafka is not ready: {error}",
                 flush=True,

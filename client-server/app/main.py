@@ -1,13 +1,15 @@
 import json
-from datetime import datetime, timezone
-from uuid import uuid4
-
-from flask import Flask, jsonify, request
-from kafka import KafkaProducer
-from flask_cors import CORS
-import requests
 import os
 import time
+from datetime import UTC, datetime
+from uuid import uuid4
+
+import requests
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from kafka.errors import KafkaError
+
+from kafka import KafkaProducer
 
 app = Flask(__name__)
 CORS(app)
@@ -35,7 +37,7 @@ def connect_to_kafka():
             print("Connected to Kafka", flush=True)
             return kafka_producer
 
-        except Exception as error:
+        except KafkaError as error:
             print(
                 f"Kafka is not ready: {error}",
                 flush=True,
@@ -57,7 +59,7 @@ def buy():
         "price": data["price"],
         "quantity": data["quantity"],
         "total_price": data["price"] * data["quantity"],
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
     }
 
     producer.send("purchases", purchase).get(timeout=10)
